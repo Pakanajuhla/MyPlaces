@@ -50,4 +50,5 @@ class MainViewController: UITableViewController {
     }
     */
 
+    @IBAction func cencelAction (_ segue: UIStoryboardSegue) {}
 }
