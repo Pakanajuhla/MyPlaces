@@ -5,17 +5,23 @@
 //  Created by Владислав on 10.07.2023.
 //
 
-import RealmSwift
+import RealmSwift   // библиотека для работы с базой данных Realm
 
-let realm = try! Realm()
+let realm = try! Realm()  // Эта строка кода инициализирует экземпляр Realm, используя ключевое слово try!. Оно указывает, что инициализация должна произойти без возможности обработки исключений
 
 class StorageManeger {
     
-    static func saveObject (_ place: Place) {
-        
-        try! realm.write {
-            realm.add(place)
-            
+    // Статические функции являются частью класса или объекта, они не требуют создания экземпляра класса или объекта для вызова.
+    
+    static func saveObject (_ place: Place) { // принимает объект типа Place в качестве параметра. Используется для сохранения объекта Place в базе данных Realm
+        try! realm.write {         // запись в базу данных Realm. try! указывает, что любые ошибки при записи будут приводить к аварийному завершению приложения!
+            realm.add(place)       // добавляет объект place в базу данных Realm
+        }
+    }
+    
+    static func deleteObject (_ place: Place) { // принимает объект типа Place в качестве параметра. Используется для удаления объекта Place в базе данных Realm
+        try! realm.write {         // запись в базу данных Realm. try! указывает, что любые ошибки при записи будут приводить к аварийному завершению приложения!
+            realm.delete(place)    // удаляет объект place в базу данных Realm
         }
     }
 }
