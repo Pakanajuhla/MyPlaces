@@ -269,6 +269,9 @@
                                     <segment title="Name"/>
                                 </segments>
                                 <color key="selectedSegmentTintColor" systemColor="systemBlueColor"/>
+                                <connections>
+                                    <action selector="sortSelection:" destination="T3t-tK-ZeY" eventType="valueChanged" id="rlP-0Y-GPz"/>
+                                </connections>
                             </segmentedControl>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="kcE-O6-HJ0"/>
@@ -283,7 +286,11 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="My Places" largeTitleDisplayMode="never" id="Z45-iT-nMH">
-                        <barButtonItem key="leftBarButtonItem" title="Item" image="AZ" id="unP-6P-X6M"/>
+                        <barButtonItem key="leftBarButtonItem" title="Item" image="AZ" id="unP-6P-X6M">
+                            <connections>
+                                <action selector="reversedSorting:" destination="T3t-tK-ZeY" id="199-8z-tze"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="3oM-Nm-tjt">
                             <connections>
                                 <segue destination="pnU-yR-cUe" kind="presentation" id="ErZ-ac-Nv2"/>
@@ -291,6 +298,8 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="reversedSortingButton" destination="unP-6P-X6M" id="CHg-SY-REo"/>
+                        <outlet property="segmentedControl" destination="qyk-aR-okE" id="Exx-jR-7Pb"/>
                         <outlet property="tableView" destination="xY5-ip-M59" id="OWW-KS-GF8"/>
                     </connections>
                 </viewController>

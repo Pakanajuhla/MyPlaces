@@ -16,6 +16,7 @@ class Place: Object {   // Class Object является частью Realm и �
     @objc dynamic var location: String?
     @objc dynamic var type: String?
     @objc dynamic var imageData: Data?
+    @objc dynamic var date = Date()
     
     // принимает параметры name, location, type и imageData и инициализирует соответствующие свойства объекта Place.
     
