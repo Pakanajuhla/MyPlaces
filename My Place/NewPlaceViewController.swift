@@ -7,23 +7,18 @@
 
 import UIKit
 
-class NewPlaceViewController: UITableViewController {   // содержит логику и настройку пользовательского интерфейса для создания нового места
+class NewPlaceViewController: UITableViewController {
     
     var currentPlace: Place?
-    var imageIsChanged = false                          // переменная используется для отслеживания изменений изображения места
+    var imageIsChanged = false
     
-    // свойства IBOutlet, связаны с элементами интерфейса пользователя в Storyboard
-    // свойства класса, которые представляют элементы пользовательского интерфейса
+    @IBOutlet var placeImage: UIImageView!
+    @IBOutlet var saveButton: UIBarButtonItem!
+    @IBOutlet var placeName: UITextField!
+    @IBOutlet var placeLocation: UITextField!
+    @IBOutlet var placeType: UITextField!
     
-    @IBOutlet var placeImage: UIImageView!          // для отображения выбранного изображения места
-    @IBOutlet var saveButton: UIBarButtonItem!      // для сохранения нового места
-    @IBOutlet var placeName: UITextField!           // для ввода имени места
-    @IBOutlet var placeLocation: UITextField!       // для ввода местоположения места
-    @IBOutlet var placeType: UITextField!           // для ввода типа места
-    
-    
-    override func viewDidLoad() {             // Этот метод вызывается, когда загружается пользовательский интерфейс для этого контроллера
-        super.viewDidLoad()
+    override func viewDidLoad() {
         
         tableView.tableFooterView = UIView()  // скрытие пустых строк в таблице
         saveButton.isEnabled = false          // отключение кнопки сохранения
@@ -111,7 +106,7 @@ class NewPlaceViewController: UITableViewController {   // содержит ло
             guard let data = currentPlace?.imageData, let image = UIImage(data: data) else { return }
             
             placeImage.image = image
-            placeImage.contentMode = .scaleAspectFill // .scaleAspectFill - это один из вариантов значения для свойства contentMode. Он определяет, что                                                                    изображение будет масштабировано по всему представлению, заполняя его полностью
+            placeImage.contentMode = .scaleAspectFill     // .scaleAspectFill - это один из вариантов значения для свойства contentMode. Он определяет, что                                                                    изображение будет масштабировано по всему представлению, заполняя его полностью
             placeName.text = currentPlace?.name
             placeLocation.text = currentPlace?.location
             placeType.text = currentPlace?.type
