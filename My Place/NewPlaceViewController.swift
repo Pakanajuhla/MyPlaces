@@ -9,7 +9,7 @@ import UIKit
 
 class NewPlaceViewController: UITableViewController {
     
-    var currentPlace: Place?
+    var currentPlace: Place!
     var imageIsChanged = false
     
     @IBOutlet var placeImage: UIImageView!
@@ -17,6 +17,7 @@ class NewPlaceViewController: UITableViewController {
     @IBOutlet var placeName: UITextField!
     @IBOutlet var placeLocation: UITextField!
     @IBOutlet var placeType: UITextField!
+    @IBOutlet weak var ratingControl: RatingControl!
     
     override func viewDidLoad() {
         
@@ -82,7 +83,7 @@ class NewPlaceViewController: UITableViewController {
         let newPlace = Place(name: placeName.text!,          // Создание нового объекта типа Place - Place - это пользовательский класс с различными свойствами
                              location: placeLocation.text,
                              type: placeType.text,
-                             imageData: imageData)
+                             imageData: imageData, rating: Double(ratingControl.rating))
         
         if currentPlace != nil {
             try! realm.write {
@@ -90,6 +91,7 @@ class NewPlaceViewController: UITableViewController {
                 currentPlace?.location = newPlace.location
                 currentPlace?.type = newPlace.type
                 currentPlace?.imageData = newPlace.imageData
+                currentPlace?.rating = newPlace.rating
               }
             } else {
                 StorageManeger.saveObject(newPlace)// Сохранение объекта Place с помощью StorageManager.saveObject().Предположительно,здесь используется некоторый
@@ -110,6 +112,8 @@ class NewPlaceViewController: UITableViewController {
             placeName.text = currentPlace?.name
             placeLocation.text = currentPlace?.location
             placeType.text = currentPlace?.type
+            
+            ratingControl.rating = Int(currentPlace.rating)
         }
     }
     
