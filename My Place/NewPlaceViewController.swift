@@ -68,6 +68,18 @@ class NewPlaceViewController: UITableViewController {
         }
     }
     
+    //MARK: Navigation
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier != "showMap" {
+            return
+        }
+        
+        let mapVC = segue.destination as! MapViewController
+        mapVC.place = currentPlace
+    }
+    
+    
     func savePlace() {   // метод для сохранения нового места или объекта типа Place
                 
         var image: UIImage?  // может содержать изображение или быть равным nil
