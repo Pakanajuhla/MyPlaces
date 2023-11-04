@@ -21,10 +21,9 @@ class NewPlaceViewController: UITableViewController {
     
     override func viewDidLoad() {
         
-        tableView.tableFooterView = UIView()  // скрытие пустых строк в таблице
-        saveButton.isEnabled = false          // отключение кнопки сохранения
-        placeName.addTarget(self, action: #selector(textFieldChanged), for: .editingChanged)  // установка целевого действия для текстового поля,
-                                                                                              // чтобы отслеживать изменения в текстовом поле
+        tableView.tableFooterView = UIView()
+        saveButton.isEnabled = false
+        placeName.addTarget(self, action: #selector(textFieldChanged), for: .editingChanged)
         setupEditScreen()
     }
     
@@ -32,28 +31,22 @@ class NewPlaceViewController: UITableViewController {
    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        // метод который является методом делегата UITableViewDelegate и вызывается, когда пользователь выбирает определенную ячейку в таблице.
-        
-        if indexPath.row == 0 {  // Проверяется, если indexPath.row равно 0, то выполняются следующие действия
+        if indexPath.row == 0 {
             
             let actionSheet = UIAlertController(title: "", message: "", preferredStyle: .actionSheet)
-            
-            // Создается экземпляр UIAlertController с типом .actionSheet (это контроллер, который отображает список действий в виде всплывающего меню)
-            
-            let cameraIcon = UIImage(named: "camera_icon")                                // Изображение cameraIcon устанавливается для действия Camera
+            let cameraIcon = UIImage(named: "camera_icon")
             let camera = UIAlertAction(title: "Camera", style: .default) { _ in
-                self.chooseImagePicker(sourse: .camera)
+                self.chooseImagePicker(source: .camera)
             }
             camera.setValue(cameraIcon, forKey: "image")
             camera.setValue(CATextLayerAlignmentMode.left, forKey: "titleTextAlignment")
             
             let photoIcon = UIImage(named: "photo_icon")
             let photo = UIAlertAction(title: "Photo", style: .default) { _ in
-                self.chooseImagePicker(sourse: .photoLibrary)
+                self.chooseImagePicker(source: .photoLibrary)
             }
             photo.setValue(photoIcon, forKey: "image")
             photo.setValue(CATextLayerAlignmentMode.left, forKey: "titleTextAlignment")
-            
             
             let cancel = UIAlertAction(title: "Cancel", style: .cancel)
             
@@ -71,28 +64,26 @@ class NewPlaceViewController: UITableViewController {
     //MARK: Navigation
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier != "showMap" {
-            return
-        }
+        guard let identifier = segue.identifier,
+              let mapVC = segue.destination as? MapViewController // создаем экземпляр класса
+              else { return }
         
-        let mapVC = segue.destination as! MapViewController
-        mapVC.place = currentPlace
+        mapVC.incomeSegueIdentifier = identifier
+        mapVC.mapViewControllerDelegate = self
+        
+        if identifier == "showPlace" {
+            mapVC.place.name = placeName.text!
+            mapVC.place.location = placeLocation.text!
+            mapVC.place.type = placeType.text
+            mapVC.place.imageData = placeImage.image?.pngData()
+        }
     }
     
-    
-    func savePlace() {   // метод для сохранения нового места или объекта типа Place
+    func savePlace() {
                 
-        var image: UIImage?  // может содержать изображение или быть равным nil
-        
-        if imageIsChanged {             // указывает, было ли изменено изображение.
-            image = placeImage.image    // если true то переменной image присваивается текущее изображение placeImage.image
-        } else {
-            image = UIImage(named: "imagePlaceholder") // иначе ей присваивается изображение с именем "imagePlaceholder"
-        }
-        
-        let imageData = image?.pngData()               // Если image равно nil, то imageData также будет nil
-        
-        let newPlace = Place(name: placeName.text!,          // Создание нового объекта типа Place - Place - это пользовательский класс с различными свойствами
+        let image = imageIsChanged ? placeImage.image : UIImage(named: "imagePlaceholder")
+        let imageData = image?.pngData()
+        let newPlace = Place(name: placeName.text!,
                              location: placeLocation.text,
                              type: placeType.text,
                              imageData: imageData, rating: Double(ratingControl.rating))
@@ -106,9 +97,8 @@ class NewPlaceViewController: UITableViewController {
                 currentPlace?.rating = newPlace.rating
               }
             } else {
-                StorageManeger.saveObject(newPlace)// Сохранение объекта Place с помощью StorageManager.saveObject().Предположительно,здесь используется некоторый
-        }                                                       // менеджер хранилища (StorageManager), который отвечает за сохранение объектов Place
-         
+                StorageManager.saveObject(newPlace)
+        }
     }
     
     private func setupEditScreen() {
@@ -120,7 +110,7 @@ class NewPlaceViewController: UITableViewController {
             guard let data = currentPlace?.imageData, let image = UIImage(data: data) else { return }
             
             placeImage.image = image
-            placeImage.contentMode = .scaleAspectFill     // .scaleAspectFill - это один из вариантов значения для свойства contentMode. Он определяет, что                                                                    изображение будет масштабировано по всему представлению, заполняя его полностью
+            placeImage.contentMode = .scaleAspectFill
             placeName.text = currentPlace?.name
             placeLocation.text = currentPlace?.location
             placeType.text = currentPlace?.type
@@ -133,25 +123,20 @@ class NewPlaceViewController: UITableViewController {
         if let topItem = navigationController?.navigationBar.topItem {
             topItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         }
-        navigationItem.leftBarButtonItem = nil // убирает кнопку cancel
-        title = currentPlace?.name // передает в заголовок текущее название заведения
+        navigationItem.leftBarButtonItem = nil
+        title = currentPlace?.name
         saveButton.isEnabled = true
     }
     
-    // Это определение функции cancelAction(_:), которая принимает аргумент sender типа Any. В качестве аргумента, обычно передается объект, который инициировал вызов функции (например, кнопка)
-    // аргумент sender не используется, и, так как действие dismiss(animated:) не зависит от конкретного объекта, который вызвал функцию
-    @IBAction func cancelAction(_ sender: Any) {
-        
-      dismiss(animated: true)  // Это метод, который используется для закрытия текущего модульного представления (modal view controller) с анимацией
-    }
     
+    @IBAction func cancelAction(_ sender: Any) {
+      dismiss(animated: true)
+    }
 }
 
 //MARK: Text field delegate
 
 extension NewPlaceViewController: UITextFieldDelegate {
-    
-    // Скрываем клавиатуру по нажатию на Done
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
@@ -171,13 +156,13 @@ extension NewPlaceViewController: UITextFieldDelegate {
 
 extension NewPlaceViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    func chooseImagePicker (sourse: UIImagePickerController.SourceType) {
-        
-        if UIImagePickerController.isSourceTypeAvailable(sourse) {
+    func chooseImagePicker (source: UIImagePickerController.SourceType) {
+       
+        if UIImagePickerController.isSourceTypeAvailable(source) {
             let imagePicker = UIImagePickerController()
             imagePicker.delegate = self
             imagePicker.allowsEditing = true
-            imagePicker.sourceType = sourse
+            imagePicker.sourceType = source
             present(imagePicker, animated: true)
         }
     }
@@ -190,11 +175,14 @@ extension NewPlaceViewController: UIImagePickerControllerDelegate, UINavigationC
         imageIsChanged = true
         
         dismiss(animated: true)
-        
     }
-    
 }
 
+extension NewPlaceViewController: MapViewControllerDelegate {
+    func getAddress(_ address: String?) {
+        placeLocation.text = address
+    }
+}
 
 
 

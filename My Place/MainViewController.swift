@@ -15,8 +15,8 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     private var filteredPlaces: Results<Place>!
     private var ascendingSorting = true
     private var searchBarIsEmpty: Bool {
-        guard let text = searchController.searchBar.text else { return false }
-        return text.isEmpty
+    guard let text = searchController.searchBar.text else { return false }
+    return text.isEmpty
     }
     
     private var isFiltering: Bool {
@@ -28,43 +28,52 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     @IBOutlet weak var segmentedControl: UISegmentedControl!
     @IBOutlet weak var reversedSortingButton: UIBarButtonItem!
     
-    
-        
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         places = realm.objects(Place.self)
+        
+        if places.isEmpty {
+            showSeedingAlert()
+        }
         
         if ascendingSorting {
             reversedSortingButton.image = UIImage(named: "ArrowUp")
         } else {
             reversedSortingButton.image = UIImage(named: "ArrowDown")
         }
-        
         sorting()
-        
-        // Setup the search controller
-        searchController.searchResultsUpdater = self // установка делегата (self) для searchController что бы реализовать протокол (UISearchResultsUpdating)
-        // который будет отслеживать изменения в поисковой строке.
-        searchController.obscuresBackgroundDuringPresentation = false // затемняет фон во время презентации, не будет затемнен, и содержимое видимое
-        searchController.searchBar.placeholder = "Search"  // задается текст-подсказка для поисковой строки, которая отобразится, когда она пуста
-        navigationItem.searchController = searchController // устанавливает поисковый контроллер searchController в качестве элемента поиска для navigationItem                                                                                                                           // вашего MainViewController
-        definesPresentationContext = true  // определяет какой контент будет скрыт (true) чтобы предотвратить затемнение представления во время поиска
-         
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.placeholder = "Search"
+        navigationItem.searchController = searchController
+        definesPresentationContext = true
+    }
+    
+    // MARK: - Private section
+    
+    private func showSeedingAlert() {
+        let alert = UIAlertController(title: "Seed test data?", message: "Your places is empty, seed test data", preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "Seed", style: .default) { [weak self]_ in
+            Place.seedTestData()
+            self?.places = realm.objects(Place.self)
+            self?.tableView.reloadData()
+        }
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+        alert.addAction(okAction)
+        alert.addAction(cancelAction)
+        present(alert, animated: true)
     }
     
     // MARK: - Table view data source
     
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {           // Определяет количество строк в таблице
-       
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if isFiltering {
             return filteredPlaces.count
         }
         return places.isEmpty ? 0 : places.count
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {            // Определяет содержимое каждой ячейки
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
          let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! CustomTableViewCell
         
         var place = Place()
@@ -74,7 +83,6 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         } else {
             place = places[indexPath.row]
         }
-        // Значения текстовых меток и изображения в пользовательской ячейке (cell) устанавливаются на основе свойств объекта place
         
         cell.nameLabel.text = place.name
         cell.locationLabel.text = place.location
@@ -82,13 +90,10 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         cell.imageOfPlace.image = UIImage(data: place.imageData ?? Data())     
         cell.imageOfPlace.layer.cornerRadius = cell.imageOfPlace.frame.size.height / 2
         cell.imageOfPlace.clipsToBounds = true
-        
         return cell
     }
     
     // MARK: - Table view delegate
-    
-       // Метод определяет действие, выполняемое при свайпе вправо по ячейке. В данном случае, при свайпе вызывается действие удаления (deleteAction), которое удаляет объект Place из базы данных и удаляет соответствующую строку из таблицы.
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
@@ -99,22 +104,18 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         let place = places[indexPath.row]
         let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { (_, _, completionHandler) in
             
-            StorageManeger.deleteObject(place)
+            StorageManager.deleteObject(place)
             tableView.deleteRows(at: [indexPath], with: .automatic)
             completionHandler(true)
         }
-        
-        let configuration = UISwipeActionsConfiguration(actions: [deleteAction]) // Создается объект configuration типа UISwipeActionsConfiguration, которому                                                                                                              передается массив действий [deleteAction]
-        
-        return configuration // бъект configuration возвращается из метода, чтобы определить, какие действия должны быть доступны при свайпе ячейки вправо. В                                                                                            данном случае, доступно только одно действие - deleteAction
+        let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
+        return configuration
     }
-    
-    
     
     // MARK: - Navigation
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) { // вызывается автоматически перед переходом на другой экран (View Controller) через(segue)
-        if segue .identifier == "showDetail" {                                       // проверяет идентификатор перехода (segue.identifier)
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "showDetail" {
             guard let indexPath = tableView.indexPathForSelectedRow else { return }
             
             let place: Place
@@ -129,20 +130,18 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             
         }
     }
-    
 
-  // Эта функция может быть использована, например, для обработки возврата с экрана создания нового места обратно к списку мест в главном экране приложения
+  
     
     @IBAction func unwindSegue(_ segue: UIStoryboardSegue) {        // переход между view controller'ами.
         
         guard let newPlaceVC = segue.source as? NewPlaceViewController else { return }
         
-        newPlaceVC.savePlace()  //Если newPlaceVC содержит экземпляр NewPlaceViewController, вызывается метод saveNewPlace() для сохранения нового места
-        tableView.reloadData()  //После сохранения нового места вызывается reloadData() на таблице (tableView), чтобы обновить ее и отразить изменения после                                                                                                                                сохранения нового места.
+        newPlaceVC.savePlace()
+        tableView.reloadData()                                                                                                                                 
     }
     
     @IBAction func sortSelection(_ sender: UISegmentedControl) {
-        
         sorting()
     }
     
@@ -165,7 +164,6 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         } else {
             places = places.sorted(byKeyPath: "name", ascending: ascendingSorting)
         }
-    
         tableView.reloadData()
     }
 }

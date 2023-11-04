@@ -5,12 +5,10 @@
 //  Created by Владислав on 26.05.2023.
 //
 
-import RealmSwift   // библиотека для работы с базой данных Realm
-import UIKit        // (фреймворк) предоставляет классы и методы для создания пользовательского интерфейса
+import RealmSwift
+import UIKit
 
-class Place: Object {   // Class Object является частью Realm и служит базовым классом для моделей данных Realm
-    
-    // Аннотация @objc dynamic указывает, что это свойство должно быть доступно для использования с Realm
+class Place: Object {
     
     @objc dynamic var name = ""
     @objc dynamic var location: String?
@@ -19,8 +17,6 @@ class Place: Object {   // Class Object является частью Realm и �
     @objc dynamic var date = Date()
     @objc dynamic var rating = 0.0
     
-    // принимает параметры name, location, type и imageData и инициализирует соответствующие свойства объекта Place.
-    
     convenience init(name: String, location: String?, type: String?, imageData: Data?, rating: Double) {
         self.init()
         self.name = name
@@ -28,5 +24,19 @@ class Place: Object {   // Class Object является частью Realm и �
         self.type = type
         self.imageData = imageData
         self.rating = rating
+    }
+    
+   static func seedTestData() {
+        let restaurantNames = [
+            "Burger Heroes", "Kitchen", "Bonsai", "Дастархан",
+            "Индокитай", "X.O", "Балкан Гриль", "Sherlock Holmes",
+            "Speak Easy", "Morris Pub", "Вкусные истории",
+            "Классик", "Love&Life", "Шок", "Бочка"
+        ]
+        restaurantNames.forEach { name in
+            let imageData = UIImage(named: name)?.jpegData(compressionQuality: 0.8)
+            let place: Place = .init(name: name, location: nil, type: nil, imageData: imageData, rating: 0)
+            StorageManager.saveObject(place)
+        }
     }
 }
