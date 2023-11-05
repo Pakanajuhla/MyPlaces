@@ -176,6 +176,9 @@
                                                             </connections>
                                                         </textField>
                                                     </subviews>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="382" id="lTF-jC-hQy"/>
+                                                    </constraints>
                                                 </stackView>
                                             </subviews>
                                             <constraints>
@@ -233,14 +236,6 @@
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="42l-yd-bV2" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-                <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="LQg-ke-BJz">
-                    <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <standardMapConfiguration key="preferredConfiguration"/>
-                    <connections>
-                        <outlet property="delegate" destination="qdu-Ia-ngG" id="Foq-e7-dQG"/>
-                    </connections>
-                </mapView>
                 <exit id="ot5-Zs-F9I" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="1085.5072463768117" y="-75"/>
@@ -253,6 +248,13 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LQg-ke-BJz">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                <standardMapConfiguration key="preferredConfiguration"/>
+                                <connections>
+                                    <outlet property="delegate" destination="qdu-Ia-ngG" id="Foq-e7-dQG"/>
+                                </connections>
+                            </mapView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EQT-Fb-XMc">
                                 <rect key="frame" x="324" y="806" width="50" height="50"/>
                                 <constraints>
@@ -301,9 +303,10 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dx1-RO-2ZK">
-                                <rect key="frame" x="324" y="49" width="50" height="38"/>
+                                <rect key="frame" x="339" y="49" width="35" height="35"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="38" id="PEU-ia-2Lr"/>
+                                    <constraint firstAttribute="width" constant="35" id="60H-hO-OaV"/>
+                                    <constraint firstAttribute="height" constant="35" id="PEU-ia-2Lr"/>
                                 </constraints>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                 <state key="normal" title="Button" image="cancel"/>
@@ -320,15 +323,18 @@
                             <constraint firstItem="O99-XK-OtS" firstAttribute="bottom" secondItem="Pjb-3o-Byh" secondAttribute="bottom" constant="40" id="Gja-if-GZB"/>
                             <constraint firstItem="O99-XK-OtS" firstAttribute="trailing" secondItem="Wz2-jv-Ww9" secondAttribute="trailing" constant="20" id="Pay-GM-d7o"/>
                             <constraint firstItem="Wz2-jv-Ww9" firstAttribute="leading" secondItem="O99-XK-OtS" secondAttribute="leading" constant="20" id="Pej-kk-9f3"/>
-                            <constraint firstItem="dx1-RO-2ZK" firstAttribute="leading" secondItem="O99-XK-OtS" secondAttribute="leading" constant="324" id="Q2U-N3-JHB"/>
                             <constraint firstItem="O99-XK-OtS" firstAttribute="bottom" secondItem="EQT-Fb-XMc" secondAttribute="bottom" constant="40" id="QJf-8O-Kpj"/>
                             <constraint firstItem="fKs-wu-Xur" firstAttribute="centerX" secondItem="Vbx-lI-iJH" secondAttribute="centerX" id="RfI-EY-6Yl"/>
                             <constraint firstItem="O99-XK-OtS" firstAttribute="trailing" secondItem="EQT-Fb-XMc" secondAttribute="trailing" constant="40" id="TRB-wP-RdX"/>
+                            <constraint firstItem="LQg-ke-BJz" firstAttribute="bottom" secondItem="Vbx-lI-iJH" secondAttribute="bottom" id="UuF-qo-4Yc"/>
                             <constraint firstItem="Wz2-jv-Ww9" firstAttribute="top" secondItem="Vbx-lI-iJH" secondAttribute="top" constant="185" id="XXH-bb-F2v"/>
+                            <constraint firstItem="LQg-ke-BJz" firstAttribute="trailing" secondItem="Vbx-lI-iJH" secondAttribute="trailing" id="dUg-18-xyn"/>
                             <constraint firstItem="0eE-Y1-fjQ" firstAttribute="centerX" secondItem="Vbx-lI-iJH" secondAttribute="centerX" id="keh-bF-r0F"/>
                             <constraint firstItem="0eE-Y1-fjQ" firstAttribute="centerY" secondItem="Vbx-lI-iJH" secondAttribute="centerY" constant="-20" id="o8x-Mz-ewu"/>
                             <constraint firstItem="O99-XK-OtS" firstAttribute="trailing" secondItem="dx1-RO-2ZK" secondAttribute="trailing" constant="40" id="tR4-Gg-7sd"/>
+                            <constraint firstItem="LQg-ke-BJz" firstAttribute="top" secondItem="Vbx-lI-iJH" secondAttribute="top" id="v1P-vJ-fTC"/>
                             <constraint firstItem="Pjb-3o-Byh" firstAttribute="centerX" secondItem="Vbx-lI-iJH" secondAttribute="centerX" id="wmJ-YN-k8z"/>
+                            <constraint firstItem="LQg-ke-BJz" firstAttribute="leading" secondItem="Vbx-lI-iJH" secondAttribute="leading" id="wxE-vv-jPn"/>
                         </constraints>
                     </view>
                     <connections>
